@@ -1,0 +1,82 @@
+****NEWYORK STOCK EXCHANGE****
+
+COLOMN NAME:
+
+ExchangeName
+stock_symbol
+stock_date
+stock_price_open
+stock_price_high
+stock_price_low
+stock_price_close
+stock_volume
+stock_price_adj_close
+       
+1.to find out the total volumefor each stock
+key = stock_symbol
+value=stock_volume
+
+NYSE,AEA,2010-02-08,4.42,4.42,4.21,4.24,205500,4.24
+NYSE,AEA,2010-02-05,4.42,4.54,4.22,4.41,194300,4.21
+
+AEA,205500
+AEA,194300
+
+ CREATE A JAR FILE OF NYSE THEN
+ START HADOOP SERVICES
+
+NOTE:DNT KEEP UR JAR OR PROG ON HDFS
+
+ls NYSE.csv
+ upload on hadoop
+hadoop fs -put NYSE.csv  /niit
+verified
+hadoop fs  -ls  /niit
+hadoop jar stkvol.jar StockVolume  /niit/NYSE.csv  /niit/mr_output1---
+shows error because exception throw file already exist.
+hadoop jar stkvol.jar StockVolume  /niit/NYSE.csv  /niit/mr_output2
+it will run
+
+MAP-REDUCE FRAMEWORK
+
+MAP I/P RECORDS=735026
+MAP O/P RECORDS=735026
+I/PSPLIT BYTE=101
+COMBINE I/P=735026
+COMBINE O/P=203
+
+CHECK OUTPUT
+hadoop fs -cat   /niit/mr_output2/part-r-00000
+
+create one more folder under niit to store data from NYSE to niit
+hadoop fs  -mv  /niit/NYSE.csv  /niit/nyse
+
+hadoop  fs  -ls /niit/nyse
+
+hadoop fs  -cp  /niit/nyse/NYSE.csv/niit/nyse/NYSE1.csv
+
+again run the prog
+
+hadoop jar stkvol.jar  StockVolume  /niit/nyse  /niit/mr_output3
+2blocks/MAPPER/COMBINER/ BUT SINGLE REDUCER
+map-i/p=1470052
+map-o/p=1470050
+map op bytes=17563174
+combine ip=1470050
+combine op=406
+reduce ip=203
+reduce shuffle bytes=5684
+reduce ip=406
+reduce op=203
+
+
+WITHOUT COMBINER
+create one more jar file 
+hadoop jar stkvol.jar  StockVolume  /niit/nyse  /niit/mr_output4
+it will run an show
+
+map ip=1470052
+map op=1470052
+map op bytes=17563174
+combine ip=0
+combine op=0
